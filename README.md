@@ -497,6 +497,37 @@ Expected:
 5 Running Pods
 ```
 
+
+## Step 21: Enable Auto Sync, Self-Healing, and Prune, Then Test GitOps Workflow
+
+Update the Argo CD application and enable:
+
+- Auto Sync = true
+- Self-Heal = true
+- Prune = true
+
+This ensures Argo CD continuously compares the Kubernetes cluster state with the desired state stored in Git.
+
+Test the GitOps workflow by manually changing the deployment replicas:
+
+```text
+kubectl scale deployment nginx --replicas=2 -n nginx-app
+```
+
+If the Git repository contains:
+
+```text
+replicas: 5
+```
+
+Argo CD will detect the drift and automatically revert the deployment back to 5 replicas. Similarly, if replicas are increased or decreased manually, Argo CD will restore the configuration defined in Git, demonstrating self-healing and Git as the single source of truth.
+
+Update the deployment:
+
+```text
+replicas: 5
+```
+
 ---
 
 ## Key Concepts Demonstrated
